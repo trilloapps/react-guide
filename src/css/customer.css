@@ -11,3 +11,9 @@ table tr{
 .badge{
     width: 100px !important;
 }
+.capitalize-text{
+    text-transform: capitalize;
+  }
+  img{
+    object-fit: cover;
+  }

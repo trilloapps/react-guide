@@ -1,10 +1,17 @@
-import {React,useState} from 'react'
-import { Table ,Form} from 'react-bootstrap';
-import { Header } from './header'
-import "./../css/orders.css"
+import React, { useEffect, useState } from 'react';
+import { Table, Pagination as BootstrapPagination } from 'react-bootstrap';
+import { Header } from './header';
+import { useLocation } from 'react-router-dom';
+import "./../css/orders.css";
+
 export const Orders = () => {
+  const [paramValue, setparamValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredorders, setFilteredOrders] = useState([]);
+  const [ordersData, setOrdersData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10;
   const tableHeadings = [
     { id: 1, key: "Order No" },
     { id: 2, key: "Title" },
@@ -13,37 +20,15 @@ export const Orders = () => {
     { id: 5, key: "DeliveryTime" },
     { id: 6, key: "Status" },
   ];
-  const orders = [
-    { orderNo: 'o-789', title: 'Alice', description: 'Johnson', bookingDate: +92786546865, deliveryTime: 'Apt 2, Green Valley', status: 'Delivered' },
-    { orderNo: 'o-123', title: 'Bob', description: 'Williams', bookingDate: +92786546865, deliveryTime: 'Suite 5, Downtown Plaza', status: 'In Transit' },
-    { orderNo: 'o-987', title: 'Eva', description: 'Martin', bookingDate: +92786546865, deliveryTime: '123 Main St, City Center', status: 'Cancel' },
-    { orderNo: 'o-654', title: 'David', description: 'Garcia', bookingDate: +92786546865, deliveryTime: 'Unit 8, Seaside Tower', status: 'Pending' },
-    { orderNo: 'o-321', title: 'Sophia', description: 'Jones', bookingDate: +92786546865, deliveryTime: '22 Oak St, Riverside', status: 'In Transit' },
-    { orderNo: 'o-111', title: 'Michael', description: 'Brown', bookingDate: +92786546865, deliveryTime: 'Suite 3, Skyline Residences', status: 'Cancel' },
-    { orderNo: 'o-222', title: 'Olivia', description: 'White', bookingDate: +92786546865, deliveryTime: '44 Maple St, Uptown', status: 'In Transit' },
-    { orderNo: 'o-333', title: 'Matthew', description: 'Taylor', bookingDate: +92786546865, deliveryTime: 'Unit 7, Hillside Gardens', status: 'Delivered' },
-    { orderNo: 'o-444', title: 'Emma', description: 'Smith', bookingDate: +92786546865, deliveryTime: 'Suite 10, Lakeside View', status: 'Cancel' },
-    { orderNo: 'o-555', title: 'Liam', description: 'Miller', bookingDate: +92786546865, deliveryTime: '55 Elm St, Lakeside', status: 'Delivered' }
-  ];
-  const formatBookingDates = (orders) => {
-    return orders.map(order => {
-      const formattedDate = new Date(order.bookingDate).toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      });
-  
-      return {
-        ...order,
-        bookingDate: formattedDate
-      };
-    });
-  };
-  const ordersWithFormattedDate = formatBookingDates(orders);
+  const orders = [];
+
   const handleBackClick = () => {
     // Navigate to the order screen with the customerId parameter
-    window.location.href = `/`;
+    window.location.href = `/customers`;
   };
+
+  // ----------- HANDLE ROW CLICK --------------------------------
+
   const handleRowClick = (customerId) => {
     // Navigate to the order screen with the customerId parameter
     window.location.href = `/items`;
@@ -61,7 +46,64 @@ export const Orders = () => {
         setFilteredOrders(filtered);
       };
     
-      const renderOrders = filteredorders.length > 0 ? filteredorders : ordersWithFormattedDate;
+      const renderOrders = filteredorders.length > 0 ? filteredorders : ordersData;
+
+
+
+      // ---------- GETTING THE PARAMS ---------- 
+      const location = useLocation();
+      const queryParams = new URLSearchParams(location.search);
+      useEffect(() => {
+        const param1Value = queryParams.get('param');
+        setparamValue(param1Value)
+        console.log('Param :', param1Value);
+      }, [queryParams]);
+
+
+      // -------------- GETTING THE ORDERS --------------------------------
+        // Fetch customers based on the current page
+  const fetchOrders = async (page) => {
+    try {
+      const response = await fetch('https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetCustomerOrders', {
+        method: 'POST',
+        headers: {
+          'Accept': '*/*',
+          'x-app-name': 'main',
+          'x-org-name': 'cloud',
+          'content-type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+        },
+        body: JSON.stringify({
+          customerId: paramValue,
+          start: (page - 1) * itemsPerPage + 1,
+          size: itemsPerPage,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      const totalData = data.data.totalData;
+      setOrdersData(data.data.orders);
+      setTotalPages(Math.ceil(totalData / itemsPerPage));
+    } catch (error) {
+      console.error('Error during fetch:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Only fetch orders if 'paramValue' is available
+    if (paramValue) {
+      fetchOrders(currentPage);
+    }
+  }, [paramValue, currentPage]);
+
+      const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+      };
+
   return (
     <>
     <Header/>
@@ -81,18 +123,30 @@ export const Orders = () => {
         </thead>
         <tbody>
         {renderOrders.map((row) => (
-          <tr key={row.orderNo} onClick={() => handleRowClick(row.orderNo)} className="cursor-pointer">
-            <td>{row.orderNo}</td>
+          <tr key={row.id} onClick={() => handleRowClick(row.id)} className="cursor-pointer">
+            <td>{row.id}</td>
             <td>{row.title}</td>
             <td>{row.description}</td>
-            <td>{row.bookingDate}</td>
-            <td>{row.deliveryTime}</td>
-            <td> <span className={`badge ${row.status === 'Delivered' ? 'text-bg-success' :row.status === 'Cancel'? 'text-bg-danger':row.status === 'Pending'?'text-bg-secondary':'text-bg-warning'}`}>{row.status}</span></td>
+            <td>{row.bookingDateTime}</td>
+            <td>{row.deliverDateTime}</td>
+            <td> <span className={`text-capitalize badge ${row.status === 'delivered' ? 'text-bg-success' :row.status === 'Cancel'? 'text-bg-danger':row.status === 'pending'?'text-bg-secondary':'text-bg-warning'}`}>{row.status}</span></td>
           </tr>
         ))}
         </tbody>
       </Table>
-
+      <div className='d-flex justify-content-end mt-3'>
+       <BootstrapPagination>
+          {[...Array(totalPages).keys()].map((number) => (
+            <BootstrapPagination.Item
+              key={number + 1}
+              active={number + 1 === currentPage}
+              onClick={() => handlePageChange(number + 1)}
+            >
+              {number + 1}
+            </BootstrapPagination.Item>
+          ))}
+        </BootstrapPagination>
+       </div>
     </div>
     </>
   )

@@ -9,7 +9,7 @@ export function Login() {
     e.preventDefault();
     console.log(username, password);
     try{
-      const response = await fetch('https://api.kidm-demo-dev.trilloapps.com/_preauthsvc/user/authenticate', {
+      const response = await fetch('https://api.eng-dev-1.trilloapps.com/ajaxLogin', {
         method: 'POST',
         headers: {
           'Accept':'*/*',
@@ -18,14 +18,14 @@ export function Login() {
           'content-type':'application/json',
         },
         body: JSON.stringify({
-          userId: username,
-          password: password
+          j_username: username,
+          j_password: password
         })
       });
       const data = await response.json();
       console.log(data);
       if(data.status === 'connected'){
-        navigate('/dashboard');
+        navigate('/customers');
         localStorage.setItem('accessToken',data.accessToken);
         localStorage.setItem('userDetails',JSON.stringify(data.user));
       }
