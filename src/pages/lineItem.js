@@ -1,5 +1,5 @@
 import {React,useState} from 'react'
-import { Table ,Form} from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import { Header } from './header'
 import "./../css/lineItems.css"
 export const LineItem = () => {
