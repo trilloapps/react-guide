@@ -1,0 +1,13 @@
+.bg-active{
+    background-color: rgb(210, 205, 205) !important;
+}
+.bg-inActive{
+    background-color: rgb(249, 192, 192);
+}
+table tr{
+    white-space: nowrap;
+}
+
+.badge{
+    width: 100px !important;
+}
