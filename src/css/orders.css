@@ -1,0 +1,16 @@
+.search-input{
+    width:40%;
+}
+.search-div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:15px 1.5rem 10px 30px;
+}
+table tr{
+    white-space: nowrap;
+}
+
+.badge{
+    width: 100px !important;
+}
