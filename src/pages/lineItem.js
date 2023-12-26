@@ -1,10 +1,22 @@
-import {React,useState} from 'react'
+import React, { useEffect, useState } from 'react';
+
 import { Table } from 'react-bootstrap';
 import { Header } from './header'
 import "./../css/lineItems.css"
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+
 export const LineItem = () => {
+  const navigate = useNavigate();
+  const [orderId, setOrderId] = useState('');
+  const [customerId, setCustomerId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [itemsData, setItemsData] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10;
   const tableHeadings = [
     { id: 2, key: "Name" },
     { id: 3, key: "Description" },
@@ -13,103 +25,18 @@ export const LineItem = () => {
     { id: 6, key: "Quantity" },
   ];
   
-  const items = [
-    { 
-      id:1,
-      image: 'https://currenwatches.com.pk/cdn/shop/products/wefew.jpg?v=1699506412',
-      name: 'Watch',
-      description: 'A watch is a timekeeping device typically worn on the wrist',
-      code: 'fd-45486',
-      weight: '50g',
-      quantity: '3'
-    },
-    { 
-      id:2,
-      image: 'https://cdn.dribbble.com/userupload/4058878/file/original-87daae31fb2b541441fef5d03f37e9cd.jpg?resize=400x0',
-      name: 'Product 2',
-      description: 'Description for Product 2',
-      code: 'pd-12345',
-      weight: '75g',
-      quantity: '5'
-    },
-    { 
-      id:3,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDBGKi51cCntcIvPrIv1-AieyXvFq7UfSUPA&usqp=CAU',
-      name: 'Product 3',
-      description: 'Description for Product 3',
-      code: 'pd-67890',
-      weight: '100g',
-      quantity: '2'
-    },
-    { 
-      id:4,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbzahj1XgbP6THVZhgA2Db7pK-zeViyMKqNW914dwl5ZgAVvYApVLEUwYHjnV8sw-D0ck&usqp=CAU',
-      name: 'Product 4',
-      description: 'Description for Product 4',
-      code: 'pd-54321',
-      weight: '30g',
-      quantity: '8'
-    },
-    { 
-      id:5,
-      image: 'https://www.shutterstock.com/image-vector/realistic-smartphone-mockup-mobile-phone-260nw-2252483375.jpg',
-      name: 'Product 5',
-      description: 'Description for Product 5',
-      code: 'pd-98765',
-      weight: '65g',
-      quantity: '4'
-    },
-    { 
-      id:6,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTia7bu14ENB2vjT9dhaC_ud-zxHt6cXWnaqw&usqp=CAU',
-      name: 'Product 6',
-      description: 'Description for Product 6',
-      code: 'pd-13579',
-      weight: '85g',
-      quantity: '6'
-    },
-    { 
-      id:7,
-      image: 'https://cdn.dribbble.com/userupload/4058878/file/original-87daae31fb2b541441fef5d03f37e9cd.jpg?resize=400x0',
-      name: 'Product 7',
-      description: 'Description for Product 7',
-      code: 'pd-24680',
-      weight: '120g',
-      quantity: '1'
-    },
-    { 
-      id:8,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcmK0JPdcajdOYXpxSaNXaK1Zs7KiN0Vp5ug&usqp=CAU',
-      name: 'Product 8',
-      description: 'Description for Product 8',
-      code: 'pd-11223',
-      weight: '40g',
-      quantity: '7'
-    },
-    { 
-      id:9,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuREaRaHVb3T6P0RijueB3d6FHLW0zjvCF4Q&usqp=CAU',
-      name: 'Product 9',
-      description: 'Description for Product 9',
-      code: 'pd-33445',
-      weight: '95g',
-      quantity: '3'
-    },
-    { 
-      id:10,
-      image: 'https://www.eatthis.com/wp-content/uploads/sites/4/2019/10/i-cant-believe-its-not-butter.jpg',
-      name: 'Product 10',
-      description: 'Description for Product 10',
-      code: 'pd-55667',
-      weight: '60g',
-      quantity: '5'
-    },
-    // Add more records as needed
-    // ...
-  ];
+  const items = [];
   const handleBackClick = () => {
     // Navigate to the order screen with the customerId parameter
-    window.location.href = `/order`;
+    const queryParams = {
+      param: customerId,
+    };
+
+    navigate({
+      pathname: '/order',
+      search: new URLSearchParams(queryParams).toString(),
+    });
+    // window.location.href = `/order`;
   };
     // Update filtered items when the search term changes
     const handleSearch = (event) => {
@@ -123,14 +50,78 @@ export const LineItem = () => {
       setFilteredItems(filtered);
     };
   
-    const handleRowClick = (customerId) => {
+    const handleRowClick = (itemId) => {
       // Navigate to the order screen with the customerId parameter
-      window.location.href = `/item-detail`;
+      const queryParams = {
+        itemId: itemId,
+        orderId: orderId,
+        customerId: customerId
+      };
+  
+      navigate({
+        pathname: '/item-detail',
+        search: new URLSearchParams(queryParams).toString(),
+      });
     };
 
-    const renderItems = filteredItems.length > 0 ? filteredItems : items;
+    const renderItems = filteredItems.length > 0 ? filteredItems : itemsData;
   
 
+      // ---------- GETTING THE PARAMS ---------- 
+      const location = useLocation();
+      const queryParams = new URLSearchParams(location.search);
+      useEffect(() => {
+        const orderId = queryParams.get('orderId');
+        setOrderId(orderId)
+        const customerId = queryParams.get('customerId');
+        setCustomerId(customerId)
+        console.log('Param :', orderId, customerId);
+      }, [queryParams]);
+
+
+          // -------------- GETTING THE ORDERS --------------------------------
+        // Fetch customers based on the current page
+  const fetchItems = async (page) => {
+    try {
+      const response = await fetch('https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetOrderItems', {
+        method: 'POST',
+        headers: {
+          'Accept': '*/*',
+          'x-app-name': 'main',
+          'x-org-name': 'cloud',
+          'content-type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+        },
+        body: JSON.stringify({
+          orderId: orderId,
+          start: (page - 1) * itemsPerPage + 1,
+          size: itemsPerPage,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      const totalData = data.data.totalData;
+      setItemsData(data.data.items);
+      setTotalPages(Math.ceil(totalData / itemsPerPage));
+    } catch (error) {
+      console.error('Error during fetch:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Only fetch orders if 'paramValue' is available
+    if (orderId) {
+      fetchItems(currentPage);
+    }
+  }, [orderId, currentPage]);
+
+      const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+      };
   return (
     <>
     <Header/>
@@ -152,9 +143,9 @@ export const LineItem = () => {
         <tbody>
         {renderItems.map((row) => (
           <tr key={row.id} onClick={() => handleRowClick(row.id)} className="cursor-pointer">
-            <td><span className='d-flex gap-2 align-items-center'><img height={40} width={40} className="rounded-pill" src={row.image} alt=''/><p className='m-0'>{row.name}</p></span></td>
-            <td>{row.description}</td>
-            <td>{row.code}</td>
+            <td><span className='d-flex gap-2 align-items-center'><img height={40} width={40} className="rounded-pill" src={row.image} alt=''/><p className='m-0'>{row.itemName}</p></span></td>
+            <td>{row.itemDescription}</td>
+            <td>{row.itemCode}</td>
             <td>{row.weight}</td>
             <td>{row.quantity}</td>
           </tr>
