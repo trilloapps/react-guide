@@ -3,8 +3,12 @@ import { Table, Pagination as BootstrapPagination } from 'react-bootstrap';
 import { Header } from './header';
 import { useLocation } from 'react-router-dom';
 import "./../css/orders.css";
+import { useNavigate } from 'react-router-dom';
+
+
 
 export const Orders = () => {
+  const navigate = useNavigate();
   const [paramValue, setparamValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredorders, setFilteredOrders] = useState([]);
@@ -29,9 +33,18 @@ export const Orders = () => {
 
   // ----------- HANDLE ROW CLICK --------------------------------
 
-  const handleRowClick = (customerId) => {
+  const handleRowClick = (orderId) => {
     // Navigate to the order screen with the customerId parameter
-    window.location.href = `/items`;
+    const queryParams = {
+      orderId: orderId,
+      customerId: paramValue
+    };
+
+    navigate({
+      pathname: '/items',
+      search: new URLSearchParams(queryParams).toString(),
+    });
+    // window.location.href = `/items`;
   };
       // Update filtered items when the search term changes
       const handleSearch = (event) => {
