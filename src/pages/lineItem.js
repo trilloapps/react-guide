@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { Table } from 'react-bootstrap';
-import { Header } from './header'
+// import { Table } from 'react-bootstrap';
 import "./../css/lineItems.css"
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { Table, Pagination as BootstrapPagination } from 'react-bootstrap';
+
 
 
 export const LineItem = () => {
@@ -13,7 +14,6 @@ export const LineItem = () => {
   const [customerId, setCustomerId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [itemsData, setItemsData] = useState([]);
-  const [filteredItems, setFilteredItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
@@ -42,12 +42,6 @@ export const LineItem = () => {
     const handleSearch = (event) => {
       const searchTerm = event.target.value.toLowerCase();
       setSearchTerm(searchTerm);
-  
-      // Filter items based on the search term
-      const filtered = items.filter(
-        (item) => item.name.toLowerCase().includes(searchTerm)
-      );
-      setFilteredItems(filtered);
     };
   
     const handleRowClick = (itemId) => {
@@ -64,7 +58,8 @@ export const LineItem = () => {
       });
     };
 
-    const renderItems = filteredItems.length > 0 ? filteredItems : itemsData;
+    const renderItems = itemsData.filter((item)=> item.itemName.toLowerCase().includes(searchTerm))
+
   
 
       // ---------- GETTING THE PARAMS ---------- 
@@ -124,7 +119,7 @@ export const LineItem = () => {
       };
   return (
     <>
-    <Header/>
+    {/* <Header/> */}
     <div className='p-4'>
     <div onClick={()=>handleBackClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to orders</div>
     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -141,17 +136,38 @@ export const LineItem = () => {
           </tr>
         </thead>
         <tbody>
-        {renderItems.map((row) => (
+        { renderItems.length > 0  ? (
+        renderItems.map((row) => (
           <tr key={row.id} onClick={() => handleRowClick(row.id)} className="cursor-pointer">
-            <td><span className='d-flex gap-2 align-items-center'><img height={40} width={40} className="rounded-pill" src={row.image} alt=''/><p className='m-0'>{row.itemName}</p></span></td>
-            <td>{row.itemDescription}</td>
+            <td><span className='d-flex gap-2 align-items-center'><img height={40} width={40} className="rounded-pill" src={row.picture} alt=''/><p className='m-0'>{row.itemName}</p></span></td>
+            <td>{row.itemDescription.slice(0,50)}...</td>
             <td>{row.itemCode}</td>
             <td>{row.weight}</td>
             <td>{row.quantity}</td>
           </tr>
-        ))}
+        ))
+        ):  
+        <tr>
+        <td className='text-center' colSpan="6">No matching items found.</td>
+      </tr>
+        }
         </tbody>
       </Table>
+      {renderItems.length > 0 && (
+      <div className='d-flex justify-content-end mt-3'>
+       <BootstrapPagination>
+          {[...Array(totalPages).keys()].map((number) => (
+            <BootstrapPagination.Item
+              key={number + 1}
+              active={number + 1 === currentPage}
+              onClick={() => handlePageChange(number + 1)}
+            >
+              {number + 1}
+            </BootstrapPagination.Item>
+          ))}
+        </BootstrapPagination>
+       </div>
+)}
 
     </div>
     </>
