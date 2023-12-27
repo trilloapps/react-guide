@@ -15,3 +15,9 @@ code {
 .cursor-pointer{
   cursor: pointer;
 }
+
+
+.active>.page-link, .page-link.active {
+  background-color: #324d90 !important;
+  border-color: #324d90 !important;
+}

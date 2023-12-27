@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import "./../css/itemDetail.css"
-import { Header } from './header';
 import { Modal ,Form, Button} from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -44,6 +45,16 @@ export const ItemDetail = () => {
         })
       });
       const data = await response.json();
+      if(data.status === 'success'){
+        toast.success('Quantity updated successfully!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
       setItemData(data.data)
       console.log(data);
       handleClose()
@@ -122,7 +133,7 @@ export const ItemDetail = () => {
       }, [itemId]);
   return (
   <>
-  <Header/>
+  {/* <Header/> */}
   <section  className='p-4'>
     <div onClick={()=>handleRowClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to orders</div>
     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -133,8 +144,8 @@ export const ItemDetail = () => {
         <div className="col-lg-7">
             <div className="border details rounded">
                 <figure>
-                    <img src="https://currenwatches.com.pk/cdn/shop/products/wefew.jpg?v=1699506412" height="500"
-                        alt=""/>
+                    <img src={itemData?.picture} height="500" 
+                        alt="item"/>
                 </figure>
             </div>
         </div>
@@ -149,13 +160,13 @@ export const ItemDetail = () => {
             <div>
                  <p> <strong>Code:</strong> {itemData?.itemCode}</p>
                  <p> <strong>Weight:</strong> {itemData?.weight + ' lbs'}</p>
-                 {/* <p> <strong>Price:</strong> {itemData?.itemCode}</p> */}
+                 {/* <p> <strong>Price:</strong> {itemData?.picture}</p> */}
                  <p> <strong>Quantity:</strong> {itemData?.quantity}</p>
             </div>
         </div>
     </div>
 </section>
-
+<ToastContainer />
 <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Item</Modal.Title>

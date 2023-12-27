@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Pagination as BootstrapPagination } from 'react-bootstrap';
-import { Header } from './header';
 import { useLocation } from 'react-router-dom';
 import "./../css/orders.css";
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +10,6 @@ export const Orders = () => {
   const navigate = useNavigate();
   const [paramValue, setparamValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredorders, setFilteredOrders] = useState([]);
   const [ordersData, setOrdersData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -51,16 +49,10 @@ export const Orders = () => {
         console.log(event.target.value,"event.target.value")
         const searchTerm = event.target.value.toLowerCase();
         setSearchTerm(searchTerm);
-    
-        // Filter items based on the search term
-        const filtered = orders.filter(
-          (order) => order.title.toLowerCase().includes(searchTerm)
-        );
-        setFilteredOrders(filtered);
       };
+      
+      const renderOrders = ordersData.filter((item)=> item.title.toLowerCase().includes(searchTerm))
     
-      const renderOrders = filteredorders.length > 0 ? filteredorders : ordersData;
-
 
 
       // ---------- GETTING THE PARAMS ---------- 
@@ -119,7 +111,7 @@ export const Orders = () => {
 
   return (
     <>
-    <Header/>
+    {/* <Header/> */}
     <div className='p-4'>
     <div onClick={()=>handleBackClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to Customer</div>
     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -135,7 +127,7 @@ export const Orders = () => {
           </tr>
         </thead>
         <tbody>
-        {renderOrders.map((row) => (
+        {renderOrders.length > 0  ?( renderOrders.map((row) => (
           <tr key={row.id} onClick={() => handleRowClick(row.id)} className="cursor-pointer">
             <td>{row.id}</td>
             <td>{row.title}</td>
@@ -144,9 +136,15 @@ export const Orders = () => {
             <td>{row.deliverDateTime}</td>
             <td> <span className={`text-capitalize badge ${row.status === 'delivered' ? 'text-bg-success' :row.status === 'Cancel'? 'text-bg-danger':row.status === 'pending'?'text-bg-secondary':'text-bg-warning'}`}>{row.status}</span></td>
           </tr>
-        ))}
+        ))
+        ): 
+        <tr>
+        <td className='text-center' colSpan="6">No matching orders found.</td>
+      </tr>
+        }
         </tbody>
       </Table>
+      {renderOrders.length > 0 && (
       <div className='d-flex justify-content-end mt-3'>
        <BootstrapPagination>
           {[...Array(totalPages).keys()].map((number) => (
@@ -160,6 +158,7 @@ export const Orders = () => {
           ))}
         </BootstrapPagination>
        </div>
+)}
     </div>
     </>
   )

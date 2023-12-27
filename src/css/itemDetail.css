@@ -1,8 +1,12 @@
 .btn-primary {
-    background-color: #2D88D4 !important;
-    border-color: #2D88D4 !important;
+    background-color: #324d90 !important;
+    border-color: #324d90 !important;
     
 }
 .btn-primary:hover{
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+.details img{
+    width: 100%;
+    object-fit: cover;
 }

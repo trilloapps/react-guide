@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Pagination as BootstrapPagination } from 'react-bootstrap';
-import { Header } from './header';
 import './../css/customer.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,7 +9,6 @@ const itemsPerPage = 10;
 
 export const Customer = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredCustomer, setFilteredCustomer] = useState([]);
   const [customerData, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -40,12 +38,6 @@ export const Customer = () => {
   const handleSearch = (event) => {
     const searchTerm = event.target.value.toLowerCase();
     setSearchTerm(searchTerm);
-
-    // Filter items based on the search term
-    const filtered = customerData.filter(
-      (item) => item.firstName.toLowerCase().includes(searchTerm)
-    );
-    setFilteredCustomer(filtered);
   };
 
   // Fetch customers based on the current page
@@ -84,15 +76,24 @@ export const Customer = () => {
     fetchCustomers(currentPage);
   }, [currentPage]);
 
-  const renderCustomers = filteredCustomer.length > 0 ? filteredCustomer : customerData || [];
+  const renderCustomers = customerData.filter((item) =>
+    item.firstName.toLowerCase().includes(searchTerm)
+  );
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  useEffect(() => {
+    let header = document.getElementById('header');
+    header.style.display = 'block';
+
+    // The empty dependency array [] means this effect will run once when the component mounts
+  }, []);
+
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className="p-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="m-0">Customers</h4>
@@ -113,7 +114,8 @@ export const Customer = () => {
             </tr>
           </thead>
           <tbody>
-            {renderCustomers.map((row) => (
+          {renderCustomers.length > 0 ? (
+            renderCustomers.map((row) => (
               <tr key={row.id} onClick={() => handleRowClick(row.id)} className="cursor-pointer">
                 <td>
                   <span className="d-flex gap-2 align-items-center">
@@ -130,22 +132,29 @@ export const Customer = () => {
                   </span>
                 </td>
               </tr>
-            ))}
-          </tbody>
+            ))
+          ) : (
+            <tr>
+              <td className='text-center' colSpan="5">No matching customers found.</td>
+            </tr>
+          )}
+        </tbody>
         </Table>
-       <div className='d-flex justify-content-end mt-3'>
-       <BootstrapPagination>
-          {[...Array(totalPages).keys()].map((number) => (
-            <BootstrapPagination.Item
-              key={number + 1}
-              active={number + 1 === currentPage}
-              onClick={() => handlePageChange(number + 1)}
-            >
-              {number + 1}
-            </BootstrapPagination.Item>
-          ))}
-        </BootstrapPagination>
-       </div>
+      {renderCustomers.length > 0 && (
+  <div className='d-flex justify-content-end mt-3'>
+    <BootstrapPagination>
+      {[...Array(totalPages).keys()].map((number) => (
+        <BootstrapPagination.Item
+          key={number + 1}
+          active={number + 1 === currentPage}
+          onClick={() => handlePageChange(number + 1)}
+        >
+          {number + 1}
+        </BootstrapPagination.Item>
+      ))}
+    </BootstrapPagination>
+  </div>
+)}
       </div>
     </>
   );

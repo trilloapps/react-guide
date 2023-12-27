@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import React, { useEffect , useState} from 'react';
 import Modal from 'react-bootstrap/Modal';
 import errorImage from '../assets/images/error.png';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export function Header() {
@@ -21,7 +23,7 @@ export function Header() {
   const [userProfile, setUserProfile] = useState(null);
   useEffect(() => {
     const storedData =  JSON.parse( localStorage.getItem('userDetails'))
-    setUserData(storedData.firstName);
+    setUserData(storedData?.firstName);
     getUserDetails();
   },[])
   const navigate = useNavigate();
@@ -32,10 +34,9 @@ export function Header() {
 
   const handleFileChange = (e) => {
     let userId = JSON.parse(localStorage.getItem('userDetails'));
-    console.log(userId);
     // setUserd(userId.id)
     let functionParam = {
-      userId: userId.id
+      userId: userId?.id
     }
     const formData = new FormData();
     formData.append('file', e.target.files[0]);
@@ -61,6 +62,14 @@ export function Header() {
       .then((data) => {
         console.log('File uploaded successfully', data);
         setUserProfile(data.pictureUrl)
+        toast.success('Picture updated successfully!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       })
       .catch((error) => {
         console.error('Error uploading file', error);
@@ -80,7 +89,7 @@ export function Header() {
           'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
         },
         body: JSON.stringify({
-          userId: userId.id.toString()
+          userId: userId?.id.toString()
         }),
       });
 
@@ -100,13 +109,12 @@ export function Header() {
   return (
     <>
      
-      <Navbar bg="light" expand="lg">
+      <Navbar bg="light" expand="lg" id='header'>
       <div className='container-fluid'> 
-        <Navbar.Brand href="#home">Sample App</Navbar.Brand>
+        <Navbar.Brand className='cursor-pointer text-white'>Sample App</Navbar.Brand>
         <div className="ml-auto">
           <Dropdown show={showDropdown}>
            <img  id="dropdown-basic" onClick={handleDropdownToggle} src={userProfile ? userProfile : errorImage} className='profile-dropdown' alt='profile pic'/>
-              {/* <i  id="dropdown-basic" onClick={handleDropdownToggle} style={{ cursor: 'pointer' }} className="fa-regular fa-circle-user fa-lg" /> */}
             <Dropdown.Menu>
               <Dropdown.Item eventKey="username"><i className="fa-light fa-user"></i><span> {userData}</span></Dropdown.Item>
               <Dropdown.Item eventKey="logout" className='mar' onClick={handleModalShow}><i className="fa-light fa-address-card"></i><span> Profile</span></Dropdown.Item>
@@ -150,6 +158,7 @@ export function Header() {
   </Button>
 </Modal.Footer> */}
 </Modal>
+<ToastContainer />
 </>
   );
 };
