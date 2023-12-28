@@ -119,7 +119,7 @@ export const Orders = () => {
 
   return (
     <>
-    {!loading && 
+    
     <div className='p-4'>
     <div onClick={()=>handleBackClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to Customer</div>
     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -142,12 +142,12 @@ export const Orders = () => {
             <td>{row.description}</td>
             <td>{row.bookingDateTime}</td>
             <td>{row.deliverDateTime}</td>
-            <td> <span className={`text-capitalize badge ${row.status === 'delivered' ? 'text-bg-success' :row.status === 'Cancel'? 'text-bg-danger':row.status === 'pending'?'text-bg-secondary':'text-bg-warning'}`}>{row.status}</span></td>
+            <td> <span className={`text-capitalize badge ${row.status === 'delivered' ? 'text-bg-success' :row.status === 'Cancel'? 'text-bg-danger':row.status === 'pending'?'text-bg-secondary':row.status === 'processing'?'text-bg-warning':row.status === 'shipped'?'text-bg-info':'text-bg-secondary'}`}>{row.status}</span></td>
           </tr>
         ))
         ): 
         <tr>
-        <td className='text-center' colSpan="6">No matching orders found.</td>
+       {!loading &&  <td className='text-center' colSpan="6">No matching orders found.</td> }
       </tr>
         }
         </tbody>
@@ -168,7 +168,7 @@ export const Orders = () => {
        </div>
 )}
     </div>
-    }
+    
     {loading && 
   <div className='loader'>
 <Spinner animation="border" role="status">

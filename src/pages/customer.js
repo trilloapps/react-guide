@@ -102,7 +102,6 @@ export const Customer = () => {
 
   return (
     <>
-       {!loading && 
       <div className="p-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="m-0">Customers</h4>
@@ -144,7 +143,7 @@ export const Customer = () => {
             ))
           ) : (
             <tr>
-              <td className='text-center' colSpan="5">No matching customers found.</td>
+              {!loading && <td className='text-center' colSpan="5">No matching customers found.</td>}
             </tr>
           )}
         </tbody>
@@ -165,7 +164,6 @@ export const Customer = () => {
   </div>
 )}
       </div>
-      }
       {loading && 
   <div className='loader'>
 <Spinner animation="border" role="status">
