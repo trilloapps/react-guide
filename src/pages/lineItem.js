@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
-
-// import { Table } from 'react-bootstrap';
+import Spinner from 'react-bootstrap/Spinner';
 import "./../css/lineItems.css"
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Table, Pagination as BootstrapPagination } from 'react-bootstrap';
 
+
+const API_URL = 'https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetOrderItems'
+const headers = {
+  'Accept': '*/*',
+  'x-app-name': 'main',
+  'x-org-name': 'cloud',
+  'content-type': 'application/json',
+  'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+}
 
 
 export const LineItem = () => {
@@ -16,6 +24,7 @@ export const LineItem = () => {
   const [itemsData, setItemsData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const itemsPerPage = 10;
   const tableHeadings = [
     { id: 2, key: "Name" },
@@ -78,15 +87,10 @@ export const LineItem = () => {
         // Fetch customers based on the current page
   const fetchItems = async (page) => {
     try {
-      const response = await fetch('https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetOrderItems', {
+      setLoading(true);
+      const response = await fetch(API_URL, {
         method: 'POST',
-        headers: {
-          'Accept': '*/*',
-          'x-app-name': 'main',
-          'x-org-name': 'cloud',
-          'content-type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-        },
+        headers: headers,
         body: JSON.stringify({
           orderId: orderId,
           start: (page - 1) * itemsPerPage + 1,
@@ -105,6 +109,9 @@ export const LineItem = () => {
     } catch (error) {
       console.error('Error during fetch:', error);
     }
+    finally{
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -119,7 +126,7 @@ export const LineItem = () => {
       };
   return (
     <>
-    {/* <Header/> */}
+    { !loading &&
     <div className='p-4'>
     <div onClick={()=>handleBackClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to orders</div>
     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -170,6 +177,14 @@ export const LineItem = () => {
 )}
 
     </div>
+    }
+    {loading && 
+  <div className='loader'>
+<Spinner animation="border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+</div>
+}
     </>
   )
 }

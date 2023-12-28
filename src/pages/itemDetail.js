@@ -5,8 +5,17 @@ import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Spinner from 'react-bootstrap/Spinner';
 
-
+const EDIT_API_URL = 'https://api.eng-dev-1.trilloapps.com/ds/function/shared/EditLineItem';
+const GET_DETAILS_API_URL = 'https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetItemDetails';
+const headers = {
+  'Accept':'*/*',
+  'x-app-name':'main',
+  'x-org-name':'cloud',
+  'content-type':'application/json',
+  'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+}
 
 export const ItemDetail = () => {
   const navigate = useNavigate();
@@ -15,7 +24,8 @@ export const ItemDetail = () => {
     const [customerId, setCustomerId] = useState('');
     const [itemId, setItemId] = useState('');
     const [itemData, setItemData] = useState(null);
-    const [quantity, setQuantity] = useState('2');
+    const [quantity, setQuantity] = useState('');
+    const [loading, setLoading] = useState(false);
   // State to manage form values
   
 
@@ -29,15 +39,9 @@ export const ItemDetail = () => {
   const handleQuantity = async (e) =>{
     e.preventDefault();
     try{
-      const response = await fetch('https://api.eng-dev-1.trilloapps.com/ds/function/shared/EditLineItem', {
+      const response = await fetch(EDIT_API_URL, {
         method: 'POST',
-        headers: {
-          'Accept':'*/*',
-          'x-app-name':'main',
-          'x-org-name':'cloud',
-          'content-type':'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-        },
+        headers: headers,
         body: JSON.stringify({
           "lineItemId": itemId,
           "quantity": quantity
@@ -106,23 +110,22 @@ export const ItemDetail = () => {
           try {
             if (itemId) {
               // Make an API call
-              const response = await fetch('https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetItemDetails', {
+              setLoading(true)
+              const response = await fetch(GET_DETAILS_API_URL, {
                 method: 'POST',
-                headers: {
-                  'Accept': '*/*',
-                  'x-app-name': 'main',
-                  'x-org-name': 'cloud',
-                  'content-type': 'application/json',
-                  'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-                },
+                headers: headers,
                 body: JSON.stringify({ "itemId": itemId }),
               });
               const data = await response.json();
-              console.log(data);
+
               setItemData(data.data);
+              setQuantity(data.data.quantity)
             }
           } catch (error) {
             console.error('Error fetching item details:', error);
+          }
+          finally{
+            setLoading(false)
           }
         };
       
@@ -133,39 +136,49 @@ export const ItemDetail = () => {
       }, [itemId]);
   return (
   <>
-  {/* <Header/> */}
+  
+  {!loading &&
   <section  className='p-4'>
-    <div onClick={()=>handleRowClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to orders</div>
-    <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4 className="m-0">Items</h4>
-        <button className="btn btn-primary" onClick={handleShow}><i className="fa-light fa-pen-to-square"></i> Edit</button>
-    </div>
-    <div className="row">
-        <div className="col-lg-7">
-            <div className="border details rounded">
-                <figure>
-                    <img src={itemData?.picture} height="500" 
-                        alt="item"/>
-                </figure>
-            </div>
-        </div>
-        <div className="col-lg-5">
-            <div className="border-bottom mb-3"> 
-                <h4>{itemData?.itemName}</h4>
-                <p>
-                    {itemData?.itemDescription}
-                </p>
-            </div>
+  <div onClick={()=>handleRowClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to orders</div>
+  <div className="d-flex justify-content-between align-items-center mb-3">
+      <h4 className="m-0">Items</h4>
+      <button className="btn btn-primary" onClick={handleShow}><i className="fa-light fa-pen-to-square"></i> Edit</button>
+  </div>
+  <div className="row">
+      <div className="col-lg-7">
+          <div className="border details rounded">
+              <figure>
+                  <img src={itemData?.picture} height="500" 
+                      alt="item"/>
+              </figure>
+          </div>
+      </div>
+      <div className="col-lg-5">
+          <div className="border-bottom mb-3"> 
+              <h4>{itemData?.itemName}</h4>
+              <p>
+                  {itemData?.itemDescription}
+              </p>
+          </div>
 
-            <div>
-                 <p> <strong>Code:</strong> {itemData?.itemCode}</p>
-                 <p> <strong>Weight:</strong> {itemData?.weight + ' lbs'}</p>
-                 {/* <p> <strong>Price:</strong> {itemData?.picture}</p> */}
-                 <p> <strong>Quantity:</strong> {itemData?.quantity}</p>
-            </div>
-        </div>
-    </div>
+          <div>
+               <p> <strong>Code:</strong> {itemData?.itemCode}</p>
+               <p> <strong>Weight:</strong> {itemData?.weight + ' lbs'}</p>
+               {/* <p> <strong>Price:</strong> {itemData?.picture}</p> */}
+               <p> <strong>Quantity:</strong> {itemData?.quantity}</p>
+          </div>
+      </div>
+  </div>
 </section>
+  }
+{loading && 
+  <div className='loader'>
+<Spinner animation="border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+</div>
+}
+
 <ToastContainer />
 <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

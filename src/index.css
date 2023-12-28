@@ -21,3 +21,9 @@ code {
   background-color: #324d90 !important;
   border-color: #324d90 !important;
 }
+
+.loader{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+}

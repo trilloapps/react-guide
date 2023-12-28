@@ -2,16 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { Table, Pagination as BootstrapPagination } from 'react-bootstrap';
 import './../css/customer.css';
 import { useNavigate } from 'react-router-dom';
+import Spinner from 'react-bootstrap/Spinner';
+
 
 
 const API_URL = 'https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetCustomers';
 const itemsPerPage = 10;
+const headers = {
+  'Accept': '*/*',
+  'x-app-name': 'main',
+  'x-org-name': 'cloud',
+  'content-type': 'application/json',
+  'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+}
 
 export const Customer = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [customerData, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const tableHeadings = [
     { id: 1, key: 'Name' },
@@ -43,15 +54,10 @@ export const Customer = () => {
   // Fetch customers based on the current page
   const fetchCustomers = async (page) => {
     try {
+      setLoading(true)
       const response = await fetch(API_URL, {
         method: 'POST',
-        headers: {
-          'Accept': '*/*',
-          'x-app-name': 'main',
-          'x-org-name': 'cloud',
-          'content-type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-        },
+        headers: headers,
         body: JSON.stringify({
           start: (page - 1) * itemsPerPage + 1,
           size: itemsPerPage,
@@ -68,6 +74,9 @@ export const Customer = () => {
       setTotalPages(Math.ceil(totalData / itemsPerPage));
     } catch (error) {
       console.error('Error during fetch:', error);
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -93,7 +102,7 @@ export const Customer = () => {
 
   return (
     <>
-      {/* <Header /> */}
+       {!loading && 
       <div className="p-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="m-0">Customers</h4>
@@ -156,6 +165,14 @@ export const Customer = () => {
   </div>
 )}
       </div>
+      }
+      {loading && 
+  <div className='loader'>
+<Spinner animation="border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+</div>
+}
     </>
   );
 };

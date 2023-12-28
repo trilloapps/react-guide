@@ -3,8 +3,16 @@ import { Table, Pagination as BootstrapPagination } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import "./../css/orders.css";
 import { useNavigate } from 'react-router-dom';
+import Spinner from 'react-bootstrap/Spinner';
 
-
+const API_URL = 'https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetCustomerOrders';
+const headers = {
+  'Accept': '*/*',
+  'x-app-name': 'main',
+  'x-org-name': 'cloud',
+  'content-type': 'application/json',
+  'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+}
 
 export const Orders = () => {
   const navigate = useNavigate();
@@ -13,6 +21,8 @@ export const Orders = () => {
   const [ordersData, setOrdersData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
   const itemsPerPage = 10;
   const tableHeadings = [
     { id: 1, key: "Order No" },
@@ -69,15 +79,10 @@ export const Orders = () => {
         // Fetch customers based on the current page
   const fetchOrders = async (page) => {
     try {
-      const response = await fetch('https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetCustomerOrders', {
+      setLoading(true);
+      const response = await fetch(API_URL, {
         method: 'POST',
-        headers: {
-          'Accept': '*/*',
-          'x-app-name': 'main',
-          'x-org-name': 'cloud',
-          'content-type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-        },
+        headers: headers,
         body: JSON.stringify({
           customerId: paramValue,
           start: (page - 1) * itemsPerPage + 1,
@@ -96,6 +101,9 @@ export const Orders = () => {
     } catch (error) {
       console.error('Error during fetch:', error);
     }
+    finally{
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -111,7 +119,7 @@ export const Orders = () => {
 
   return (
     <>
-    {/* <Header/> */}
+    {!loading && 
     <div className='p-4'>
     <div onClick={()=>handleBackClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to Customer</div>
     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -160,6 +168,14 @@ export const Orders = () => {
        </div>
 )}
     </div>
+    }
+    {loading && 
+  <div className='loader'>
+<Spinner animation="border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+</div>
+}
     </>
   )
 }
