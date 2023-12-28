@@ -5,6 +5,9 @@
 .navbar{
     padding: 10px 20px !important;
     background-color: #324d90 !important;
+    position: sticky;
+    top: 0;
+    z-index: 5;
 }
 .navbar .dropdown-menu {
     left: -150px !important;

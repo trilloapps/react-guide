@@ -126,7 +126,7 @@ export const LineItem = () => {
       };
   return (
     <>
-    { !loading &&
+    
     <div className='p-4'>
     <div onClick={()=>handleBackClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to orders</div>
     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -155,7 +155,7 @@ export const LineItem = () => {
         ))
         ):  
         <tr>
-        <td className='text-center' colSpan="6">No matching items found.</td>
+     { !loading &&   <td className='text-center' colSpan="6">No matching items found.</td> }
       </tr>
         }
         </tbody>
@@ -177,7 +177,7 @@ export const LineItem = () => {
 )}
 
     </div>
-    }
+    
     {loading && 
   <div className='loader'>
 <Spinner animation="border" role="status">
