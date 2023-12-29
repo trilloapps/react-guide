@@ -37,7 +37,3 @@ To run the React Order Management App on your local machine, follow these steps:
 
   npm start
   The app will be accessible at http://localhost:3000/.
-
-### 5. Technologies Used
-React: The front-end library used to build the user interface.
-RESTful API: The app communicates with a server to fetch customer, order, and item data.
