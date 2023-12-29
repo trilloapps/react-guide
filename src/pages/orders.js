@@ -125,7 +125,7 @@ export const Orders = () => {
     <>
     
     <div className='p-4'>
-    <div onClick={()=>handleBackClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to Customer</div>
+    <div onClick={()=>handleBackClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to customers</div>
     <div className="d-flex justify-content-between align-items-center mb-3">
         <h4 className="m-0">Orders</h4>
         <input type="text" className="w-50 form-control" placeholder="Search by Title" value={searchTerm} onChange={handleSearch}/>
