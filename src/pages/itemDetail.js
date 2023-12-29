@@ -31,9 +31,15 @@ export const ItemDetail = () => {
 
   // Handle input change
   const handleInputChange = (e) => {
-   console.log(e.target.value);
    setQuantity(e.target.value)
+  };
 
+  const handleKeyPress = (event) => {
+    // Allow only numeric characters
+    const isNumeric = /^[0-9]$/;
+    if (!isNumeric.test(event.key)) {
+      event.preventDefault();
+    }
   };
 
   const handleQuantity = async (e) =>{
@@ -60,7 +66,6 @@ export const ItemDetail = () => {
         });
       }
       setItemData(data.data)
-      console.log(data);
       handleClose()
       
     }
@@ -180,7 +185,7 @@ export const ItemDetail = () => {
 }
 
 <ToastContainer />
-<Modal show={show} onHide={handleClose}>
+<Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Edit Item</Modal.Title>
         </Modal.Header>
@@ -211,10 +216,12 @@ export const ItemDetail = () => {
             <Form.Group className="mb-3" controlId="quantity">
               <Form.Label>Quantity</Form.Label>
               <Form.Control
-                type="number"
+                type="text"
                 placeholder="Enter Quantity"
+                maxLength={5}
                 defaultValue={itemData?.quantity}
                 onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
               />
             </Form.Group>
             

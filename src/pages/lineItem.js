@@ -79,7 +79,6 @@ export const LineItem = () => {
         setOrderId(orderId)
         const customerId = queryParams.get('customerId');
         setCustomerId(customerId)
-        console.log('Param :', orderId, customerId);
       }, [queryParams]);
 
 
