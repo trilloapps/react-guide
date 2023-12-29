@@ -34,7 +34,6 @@ export function Login() {
     if (Object.keys(validationErrors).length === 0) {
       // Form is valid, proceed with submission
       // You can add your login logic here
-      console.log('Form submitted');
       try{
         const response = await fetch('https://api.eng-dev-1.trilloapps.com/ajaxLogin', {
           method: 'POST',

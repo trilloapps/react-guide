@@ -56,7 +56,6 @@ export const Orders = () => {
   };
       // Update filtered items when the search term changes
       const handleSearch = (event) => {
-        console.log(event.target.value,"event.target.value")
         const searchTerm = event.target.value.toLowerCase();
         setSearchTerm(searchTerm);
       };
@@ -71,7 +70,6 @@ export const Orders = () => {
       useEffect(() => {
         const param1Value = queryParams.get('param');
         setparamValue(param1Value)
-        console.log('Param :', param1Value);
       }, [queryParams]);
 
 

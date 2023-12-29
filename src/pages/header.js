@@ -75,7 +75,6 @@ export function Header() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('File uploaded successfully', data);
         setUserProfile(data.pictureUrl)
         toast.success('Picture updated successfully!', {
           position: 'top-right',
@@ -114,7 +113,6 @@ export function Header() {
 
       const data = await response.json();
       setUserProfile(data.data[0].pictureUrl)
-      console.log(data);
     } catch (error) {
       console.error('Error during fetch:', error);
     }
@@ -140,7 +138,7 @@ export function Header() {
       </div>
     </Navbar>
 
-<Modal show={show} onHide={handleModalClose}>
+<Modal show={show} onHide={handleModalClose} centered>
 <Modal.Header closeButton>
   <Modal.Title>Profile</Modal.Title>
 </Modal.Header>
@@ -164,14 +162,6 @@ export function Header() {
     <input type='text' className='form-control' value='Ahmad' disabled/>
   </div>
 </Modal.Body>
-{/* <Modal.Footer>
-  <Button variant="secondary" onClick={handleModalClose}>
-    Close
-  </Button>
-  <Button variant="primary" onClick={handleModalClose}>
-    Save
-  </Button>
-</Modal.Footer> */}
 </Modal>
 <ToastContainer />
 </>
