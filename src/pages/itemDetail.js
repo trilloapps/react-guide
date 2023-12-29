@@ -145,7 +145,7 @@ export const ItemDetail = () => {
   <section  className='p-4'>
   <div onClick={()=>handleRowClick()} className="cursor-pointer mb-4 back-button" ><i className="fa-solid fa-arrow-turn-down-left me-2"></i> Back to orders</div>
   <div className="d-flex justify-content-between align-items-center mb-3">
-      <h4 className="m-0">Items</h4>
+      <h4 className="m-0">Item Details</h4>
       <button className="btn btn-primary" onClick={handleShow}><i className="fa-light fa-pen-to-square"></i> Edit</button>
   </div>
   {!loading &&

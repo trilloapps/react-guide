@@ -115,6 +115,12 @@ export const Orders = () => {
         setCurrentPage(pageNumber);
       };
 
+      const formatTimestamp = (timestamp) => {
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(timestamp*1000).toLocaleDateString('en-US', options);
+       
+      };
+
   return (
     <>
     
@@ -135,11 +141,11 @@ export const Orders = () => {
         <tbody>
         {renderOrders.length > 0  ?( renderOrders.map((row) => (
           <tr key={row.id} onClick={() => handleRowClick(row.id)} className="cursor-pointer">
-            <td>{row.id}</td>
+            <td>{row.orderNo}</td>
             <td>{row.title}</td>
             <td>{row.description}</td>
-            <td>{row.bookingDateTime}</td>
-            <td>{row.deliverDateTime}</td>
+            <td>{formatTimestamp(row.bookingDateTime)}</td>
+            <td>{formatTimestamp(row.deliverDateTime)}</td>
             <td> <span className={`text-capitalize badge ${row.status === 'delivered' ? 'text-bg-success' :row.status === 'Cancel'? 'text-bg-danger':row.status === 'pending'?'text-bg-secondary':row.status === 'processing'?'text-bg-warning':row.status === 'shipped'?'text-bg-info':'text-bg-secondary'}`}>{row.status}</span></td>
           </tr>
         ))
