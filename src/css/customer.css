@@ -17,3 +17,6 @@ table tr{
   img{
     object-fit: cover;
   }
+  .form-control:focus{
+    box-shadow: none;
+  }

@@ -1,7 +1,7 @@
 import { Navbar, Dropdown } from 'react-bootstrap';
 import '../css/header.css';
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect , useState} from 'react';
+import React, { useEffect, useRef , useState} from 'react';
 import Modal from 'react-bootstrap/Modal';
 import errorImage from '../assets/images/error.png';
 import { toast, ToastContainer } from 'react-toastify';
@@ -14,10 +14,25 @@ export function Header() {
   const handleModalShow = () => setShow(true);
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
   };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   const [userData, setUserData] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
@@ -112,13 +127,13 @@ export function Header() {
       <Navbar bg="light" expand="lg" id='header'>
       <div className='container-fluid'> 
         <Navbar.Brand className='cursor-pointer text-white'>Sample App</Navbar.Brand>
-        <div className="ml-auto">
+        <div ref={dropdownRef} className="ml-auto">
           <Dropdown show={showDropdown}>
            <img  id="dropdown-basic" onClick={handleDropdownToggle} src={userProfile ? userProfile : errorImage} className='profile-dropdown' alt='profile pic'/>
             <Dropdown.Menu>
-              <Dropdown.Item eventKey="username"><i className="fa-light fa-user"></i><span> {userData}</span></Dropdown.Item>
-              <Dropdown.Item eventKey="logout" className='mar' onClick={handleModalShow}><i className="fa-light fa-address-card"></i><span> Profile</span></Dropdown.Item>
-              <Dropdown.Item eventKey="logout" className='mar' onClick={handleLogout}><i className="fa-regular fa-right-from-bracket"></i><span> Log Out</span></Dropdown.Item>
+              <Dropdown.Item eventKey="username"><i className="fa-light fa-user me-1"></i><span> {userData}</span></Dropdown.Item>
+              <Dropdown.Item eventKey="profile" className='mar' onClick={handleModalShow}><i className="fa-light fa-address-card me-1"></i><span> Profile</span></Dropdown.Item>
+              <Dropdown.Item eventKey="logout" className='mar' onClick={handleLogout}><i className="fa-regular fa-right-from-bracket me-1"></i><span> Logout</span></Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </div>

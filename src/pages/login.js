@@ -10,12 +10,22 @@ export function Login() {
   const [errors, setErrors] = useState({});
 
 
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, username: '' }));
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, password: '' }));
+  };
   const handleSubmit = async (e) =>{
     e.preventDefault();
 
+
     const validationErrors = {};
     if (!username.trim()) {
-      validationErrors.username = 'Username is required';
+      validationErrors.username = 'User ID is required';
     }
     if (!password.trim()) {
       validationErrors.password = 'Password is required';
@@ -96,7 +106,7 @@ export function Login() {
           <label className='form-label'>
             User ID
           </label>
-          <input type='text' className={`form-control ${errors.username ? 'is-invalid' : ''}`} value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input type='text' placeholder='User ID' className={`form-control ${errors.username ? 'is-invalid' : ''}`} value={username} onChange={handleUsernameChange}/>
           {errors.username && <div className='invalid-feedback'>{errors.username}</div>}
         </div>
 
@@ -104,7 +114,7 @@ export function Login() {
           <label className='form-label'>
             Password
           </label>
-          <input type='password' className={`form-control ${errors.password ? 'is-invalid' : ''}`} value={password} onChange={(e) => setPassword(e.target.value)}/>
+          <input type='password' placeholder='Password' className={`form-control ${errors.password ? 'is-invalid' : ''}`} value={password} onChange={handlePasswordChange}/>
           {errors.password && <div className='invalid-feedback'>{errors.password}</div>}
 
         </div>
