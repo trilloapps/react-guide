@@ -35,7 +35,7 @@ export function Login() {
       // Form is valid, proceed with submission
       // You can add your login logic here
       try{
-        const response = await fetch('https://api.eng-dev-1.trilloapps.com/ajaxLogin', {
+        const response = await fetch('https://api.eng-dev-1.trilloapps.com/_preauthsvc/user/authenticate', {
           method: 'POST',
           headers: {
             'Accept':'*/*',
@@ -44,8 +44,8 @@ export function Login() {
             'content-type':'application/json',
           },
           body: JSON.stringify({
-            j_username: username,
-            j_password: password
+            userId: username,
+            password: password
           })
         });
         const data = await response.json();
