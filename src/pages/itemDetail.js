@@ -7,8 +7,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Spinner from 'react-bootstrap/Spinner';
 
-const EDIT_API_URL = 'https://api.eng-dev-1.trilloapps.com/ds/function/shared/EditLineItem';
-const GET_DETAILS_API_URL = 'https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetItemDetails';
+const EDIT_API_URL = 'https://fe-wb-lab1.kdlabs.dev/ds/function/shared/EditLineItem';
+const GET_DETAILS_API_URL = 'https://fe-wb-lab1.kdlabs.dev/ds/function/shared/GetItemDetails';
 const headers = {
   'Accept':'*/*',
   'x-app-name':'main',
