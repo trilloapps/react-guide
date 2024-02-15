@@ -56,13 +56,13 @@ export function Header() {
     const formData = new FormData();
     formData.append('file', e.target.files[0]);
     formData.append('folder', 'public/images');
-    formData.append('makePublic', true);
+    formData.append('makePublic', false);
     formData.append('functionName', 'AddUserImage');
     formData.append('functionParam', JSON.stringify(functionParam));
 
 
     // Example using fetch:
-    fetch('https://api.eng-dev-1.trilloapps.com/foldersvc/cloudstorage/upload', {
+    fetch('https://fe-wb-lab1.kdlabs.dev/foldersvc/cloudstorage/upload', {
       method: 'POST',
       headers: {
         'Accept': '*/*',
@@ -75,7 +75,7 @@ export function Header() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setUserProfile(data.pictureUrl)
+        getUserDetails()
         toast.success('Picture updated successfully!', {
           position: 'top-right',
           autoClose: 3000,
@@ -93,7 +93,7 @@ export function Header() {
   const getUserDetails = async () => {
     let userId = JSON.parse(localStorage.getItem('userDetails'))
     try {
-      const response = await fetch('https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetUserDetails', {
+      const response = await fetch('https://fe-wb-lab1.kdlabs.dev/ds/function/shared/GetUserDetails', {
         method: 'POST',
         headers: {
           'Accept': '*/*',
@@ -112,7 +112,7 @@ export function Header() {
       }
 
       const data = await response.json();
-      setUserProfile(data.data[0].pictureUrl)
+      setUserProfile(data.data.pictureUrl)
     } catch (error) {
       console.error('Error during fetch:', error);
     }
