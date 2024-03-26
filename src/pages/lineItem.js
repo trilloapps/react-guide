@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Table, Pagination as BootstrapPagination } from 'react-bootstrap';
 
 
-const API_URL = 'https://api.eng-dev-1.trilloapps.com/ds/function/shared/GetOrderItems'
+const API_URL = 'https://fe-wb-lab1.kdlabs.dev/ds/function/shared/GetOrderItems'
 const headers = {
   'Accept': '*/*',
   'x-app-name': 'main',
