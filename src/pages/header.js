@@ -46,6 +46,14 @@ export function Header() {
     localStorage.clear()
     navigate('/')
   };
+  const navigateToCustomers = () =>{
+    navigate('/customers')
+  }
+  const navigateToAdmin = () =>{
+    navigate('/admin')
+
+  }
+
 
   const handleFileChange = (e) => {
     let userId = JSON.parse(localStorage.getItem('userDetails'));
@@ -56,13 +64,13 @@ export function Header() {
     const formData = new FormData();
     formData.append('file', e.target.files[0]);
     formData.append('folder', 'public/images');
-    formData.append('makePublic', false);
+    formData.append('makePublic', true);
     formData.append('functionName', 'AddUserImage');
     formData.append('functionParam', JSON.stringify(functionParam));
 
 
     // Example using fetch:
-    fetch('https://fe-wb-lab1.kdlabs.dev/foldersvc/cloudstorage/upload', {
+    fetch('https://api.apps-demo-2.trilloapps.com/foldersvc/cloudstorage/upload', {
       method: 'POST',
       headers: {
         'Accept': '*/*',
@@ -93,7 +101,7 @@ export function Header() {
   const getUserDetails = async () => {
     let userId = JSON.parse(localStorage.getItem('userDetails'))
     try {
-      const response = await fetch('https://fe-wb-lab1.kdlabs.dev/ds/function/shared/GetUserDetails', {
+      const response = await fetch('https://api.apps-demo-2.trilloapps.com/ds/function/shared/GetUserDetails', {
         method: 'POST',
         headers: {
           'Accept': '*/*',
@@ -124,12 +132,13 @@ export function Header() {
      
       <Navbar bg="light" expand="lg" id='header'>
       <div className='container-fluid'> 
-        <Navbar.Brand className='cursor-pointer text-white'>Sample App</Navbar.Brand>
+        <Navbar.Brand className='cursor-pointer text-white' onClick={navigateToCustomers}>Sample App</Navbar.Brand>
         <div ref={dropdownRef} className="ml-auto">
           <Dropdown show={showDropdown}>
            <img  id="dropdown-basic" onClick={handleDropdownToggle} src={userProfile ? userProfile : errorImage} className='profile-dropdown' alt='profile pic'/>
             <Dropdown.Menu>
               <Dropdown.Item eventKey="username"><i className="fa-light fa-user me-1"></i><span> {userData}</span></Dropdown.Item>
+              <Dropdown.Item eventKey="profile" className='mar' onClick={navigateToAdmin}><i className="fa-solid fa-user-tie-hair me-1"></i><span> User Manger</span></Dropdown.Item>
               <Dropdown.Item eventKey="profile" className='mar' onClick={handleModalShow}><i className="fa-light fa-address-card me-1"></i><span> Profile</span></Dropdown.Item>
               <Dropdown.Item eventKey="logout" className='mar' onClick={handleLogout}><i className="fa-regular fa-right-from-bracket me-1"></i><span> Logout</span></Dropdown.Item>
             </Dropdown.Menu>

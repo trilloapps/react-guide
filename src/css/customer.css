@@ -20,3 +20,6 @@ table tr{
   .form-control:focus{
     box-shadow: none;
   }
+  /* .dropdown-toggle::after{
+    display: none !important;
+  } */
