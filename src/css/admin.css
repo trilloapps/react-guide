@@ -1,0 +1,27 @@
+.search-icon{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+ .dropdown-toggle::after{
+    display: none !important;
+  }
+
+  .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+    /* color: var(--bs-btn-active-color); */
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+.btn-success{
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+.table-height{
+    height: calc(100vh - 270px);
+    overflow: auto;
+}
+table thead{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}

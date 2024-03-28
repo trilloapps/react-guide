@@ -6,7 +6,7 @@ import Spinner from 'react-bootstrap/Spinner';
 
 
 
-const API_URL = 'https://fe-wb-lab1.kdlabs.dev/ds/function/shared/GetCustomers';
+const API_URL = 'https://api.apps-demo-2.trilloapps.com/ds/function/shared/GetCustomers';
 const itemsPerPage = 10;
 const headers = {
   'Accept': '*/*',
