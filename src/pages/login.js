@@ -35,7 +35,7 @@ export function Login() {
       // Form is valid, proceed with submission
       // You can add your login logic here
       try{
-        const response = await fetch('https://fe-wb-lab1.kdlabs.dev/_preauthsvc/user/authenticate', {
+        const response = await fetch('https://api.apps-demo-2.trilloapps.com/_preauthsvc/user/authenticate', {
           method: 'POST',
           headers: {
             'Accept':'*/*',

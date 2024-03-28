@@ -5,6 +5,7 @@ import { Orders } from "./pages/orders";
 import { LineItem } from "./pages/lineItem";
 import { ItemDetail } from "./pages/itemDetail";
 import { useAuth } from './useAuth';
+import { Admin } from "./pages/admin";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/order" element={<Orders />} />
           <Route path="/items" element={<LineItem />} />
           <Route path="/item-detail" element={<ItemDetail />} />
+          <Route path="/admin" element={<Admin />} />
         </>
       )}
     </Routes>

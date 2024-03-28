@@ -5,7 +5,7 @@ import "./../css/orders.css";
 import { useNavigate } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
 
-const API_URL = 'https://fe-wb-lab1.kdlabs.dev/ds/function/shared/GetCustomerOrders';
+const API_URL = 'https://api.apps-demo-2.trilloapps.com/ds/function/shared/GetCustomerOrders';
 const headers = {
   'Accept': '*/*',
   'x-app-name': 'main',
