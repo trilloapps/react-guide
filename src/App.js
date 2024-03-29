@@ -6,6 +6,7 @@ import { LineItem } from "./pages/lineItem";
 import { ItemDetail } from "./pages/itemDetail";
 import { useAuth } from './useAuth';
 import { Admin } from "./pages/admin";
+import SignUp from "./pages/signup";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      {/* <Route path="/" element={<SignUp />} /> */}
       {authenticated && (
         <>
           <Route path="/customers" element={<Customer />} />
