@@ -2,12 +2,20 @@ import React, { useState , useEffect} from 'react';
 import  '../css/login.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useNavigate } from 'react-router-dom';
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { authentication } from '../firebase';
 
 export function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loader, setLoader] = useState(false)
   const [errors, setErrors] = useState({});
+  const[userDetail,setUserDetail]=useState()
+  const [verifyBoolean, setVerifyBoolean] = useState(false)
+  const [verificationCodeError, setVerificationCodeError] = useState(false)
+  const [verificationCode, setVerificationCode] = useState('')
+  const navigate = useNavigate();
 
 
   const handleUsernameChange = (e) => {
@@ -19,6 +27,47 @@ export function Login() {
     setPassword(e.target.value);
     setErrors((prevErrors) => ({ ...prevErrors, password: '' }));
   };
+  const navigateToAdmin = () =>{
+    navigate('/signup')
+
+  }
+  const generateRecaptcha = () => {
+    console.log("heyyy")
+    window.recaptchaVerifier = new RecaptchaVerifier(authentication, 'testing', {
+        'size': 'invisible',
+        'callback': (response) => {
+            // reCAPTCHA solved, allow signInWithPhoneNumber.
+            //   onSignInSubmit();
+        }
+    });
+}
+const verifyToken = (e) => {
+
+    if (verificationCode.length === 6) {
+        window.confirmationResult.confirm(verificationCode).then(async (result) => {
+
+            console.log(result, "reseeeee")
+            window.location.href=('/customers');
+            localStorage.setItem('accessToken',userDetail.accessToken);
+            localStorage.setItem('userDetails',JSON.stringify(userDetail.user));
+        },
+            (error) => {
+                console.log("Error catched===>>>>>", error);
+                //  this.Loader = false;
+                //  this.displayAlertMessage('Invalid code!', 'error', 'danger');
+            })
+            .catch((error) => {
+                console.log("error: ", error);
+                //  this.Loader = false;
+                //  this.displayAlertMessage('An internal server error occured. Please try again later.', 'error', 'danger');
+            });
+    }
+}
+
+  const handleVerifyCodeChange = (e) => {
+    console.log(e.target.value)
+    setVerificationCode(e.target.value)
+}
   const handleSubmit = async (e) =>{
     e.preventDefault();
 
@@ -51,9 +100,19 @@ export function Login() {
         const data = await response.json();
         
         if(data.status === 'connected'){
-          window.location.href=('/customers');
-          localStorage.setItem('accessToken',data.accessToken);
-          localStorage.setItem('userDetails',JSON.stringify(data.user));
+          generateRecaptcha()
+          setUserDetail(data)
+          let phoneNumber = data.user.mobilePhone;
+          let appVerifier = window.recaptchaVerifier;
+          console.log(phoneNumber,appVerifier)
+          signInWithPhoneNumber(authentication, phoneNumber, appVerifier).then(confirmationResult => {
+              console.log(confirmationResult, "confirmationResult")
+              window.confirmationResult = confirmationResult;
+              setVerifyBoolean(true);
+          }).catch((error) => {
+              console.log(error, "error")
+          })
+
         }
         else{
           toast.error(`${data.message}`, {
@@ -65,7 +124,7 @@ export function Login() {
             draggable: true,
           });
         }
-  
+ 
         
       }
       catch(error)
@@ -94,7 +153,9 @@ export function Login() {
   }, []);
 
   return (
+    <div>
 
+    {!verifyBoolean ? (
     <div>
      <div className='auth-bg'></div>
      <div className='auth-card'>
@@ -121,12 +182,77 @@ export function Login() {
         <div className='form-group mb-3 text-center'>
           <button className='btn btn-primary w-100'>Submit</button>
         </div>
+      <div id='testing'></div>
        </form>
-      
+       <div class="text-center">
+        <span >Don't have an account? <a  className=" text-primary" onClick={navigateToAdmin} href='/signup'>Signup</a> </span>
+     </div>
       </div>
       <ToastContainer />
-     </div>
-    
+     </div>):
+     
+
+      (<div className="auth-card shadow" >
+      <div className="">
+          <h2 className="text-primary fw-bold text-center mb-4">
+              We just texted you
+          </h2>
+          <p className="m-0 pb-2 text-center">
+              <b>A verification code was sent to your Phone Number</b>
+          </p>
+          <form>
+              <div className="d-flex align-items-center gap-2 pb-2">
+                  <input
+                      type="text"
+                      maxLength="6"
+                      className="form-control"
+                      placeholder="Enter 6 digit code"
+                      value={verificationCode}
+                      onChange={handleVerifyCodeChange}
+                  />
+              </div>
+              <small className="text-danger support-text">
+                  {verificationCodeError}
+              </small>
+              <small
+                  className="text-danger font-14 mt-1"
+                  style={{
+                      display:
+                          verificationCode.length > 1 && verificationCode.length < 6 ? 'block' : 'none',
+                  }}
+              >
+                  Please enter verification code
+              </small>
+          </form>
+          <div className="text-center mt-4">
+              <button
+                  className="btn btn-primary"
+                  onClick={verifyToken}
+
+              >
+                  {!loader ? (
+                      'Submit Code'
+                  ) : (
+                      <div className="spinner-border spinner-border-sm" role="status">
+                          <span className="sr-only">Loading...</span>
+                      </div>
+                  )}
+              </button>
+          </div>
+          <div className="text-center mt-5">
+              <div className="d-flex gap-2 text-center">
+                  <p className="m-0 pt-2 pb-2">
+                      <b>Having issues receiving a code?</b>
+                  </p>{' '}
+                  <a href='/' className="pt-2 pb-2">
+                      Contact support
+                  </a>
+              </div>
+          </div>
+      </div>
+  </div>
+     )}
+        </div>
   );
 }
 
