@@ -86,7 +86,7 @@ export const Admin = () => {
 
       const data = await response.json();
       const totalData = data.totalItems;
-      console.log(totalData);
+     
       setUsers(data.items);
       setTotalPages(Math.ceil(totalData / itemsPerPage));
     } catch (error) {

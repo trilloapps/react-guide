@@ -39,7 +39,9 @@ export function Header() {
   useEffect(() => {
     const storedData =  JSON.parse( localStorage.getItem('userDetails'))
     setUserData(storedData?.firstName);
-    getUserDetails();
+    let accessToken = localStorage.getItem('accessToken');
+
+    if(accessToken) getUserDetails();
   },[])
   const navigate = useNavigate();
   const handleLogout = () => {

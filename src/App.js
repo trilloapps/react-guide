@@ -4,27 +4,28 @@ import { Customer } from "./pages/customer";
 import { Orders } from "./pages/orders";
 import { LineItem } from "./pages/lineItem";
 import { ItemDetail } from "./pages/itemDetail";
-import { useAuth } from './useAuth';
+// import { useAuth } from './useAuth';
 import { Admin } from "./pages/admin";
 import SignUp from "./pages/signup";
 
 
 function App() {
-  const { authenticated } = useAuth();
+  // const { authenticated } = useAuth();
 
   return (
     <Routes>
+      <Route path="/signup" element={<SignUp />} />
       <Route path="/" element={<Login />} />
-      {/* <Route path="/" element={<SignUp />} /> */}
-      {authenticated && (
+    
+      {/* {authenticated && ( */}
         <>
-          <Route path="/customers" element={<Customer />} />
-          <Route path="/order" element={<Orders />} />
-          <Route path="/items" element={<LineItem />} />
-          <Route path="/item-detail" element={<ItemDetail />} />
-          <Route path="/admin" element={<Admin />} />
+        <Route path="/customers" element={<Customer />} />
+        <Route path="/order" element={<Orders />} />
+        <Route path="/items" element={<LineItem />} />
+        <Route path="/item-detail" element={<ItemDetail />} />
+        <Route path="/admin" element={<Admin />} />
         </>
-      )}
+       {/* )} */}
     </Routes>
   );
 }

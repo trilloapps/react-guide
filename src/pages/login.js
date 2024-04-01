@@ -182,17 +182,20 @@ const verifyToken = (e) => {
         <div className='form-group mb-3 text-center'>
           <button className='btn btn-primary w-100'>Submit</button>
         </div>
-      <div id='testing'></div>
        </form>
-       <div class="text-center">
-        <span >Don't have an account? <a  className=" text-primary" onClick={navigateToAdmin} href='/signup'>Signup</a> </span>
+       <div className="text-center">
+        <span >Don't have an account? <a  className=" text-primary"  style={{cursor:'pointer'}} onClick={navigateToAdmin} >Signup</a> </span>
      </div>
       </div>
+      <div id='testing'></div>
       <ToastContainer />
      </div>):
      
 
-      (<div className="auth-card shadow" >
+      (
+        <div>
+      <div className='auth-bg'></div>
+      <div className="auth-card shadow" >
       <div className="">
           <h2 className="text-primary fw-bold text-center mb-4">
               We just texted you
@@ -250,6 +253,7 @@ const verifyToken = (e) => {
               </div>
           </div>
       </div>
+  </div>
   </div>
      )}
         </div>

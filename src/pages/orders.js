@@ -60,7 +60,7 @@ export const Orders = () => {
         setSearchTerm(searchTerm);
       };
       
-      const renderOrders = ordersData.filter((item)=> item.title.toLowerCase().includes(searchTerm))
+      const renderOrders = ordersData.filter((item)=> item?.title?.toLowerCase().includes(searchTerm))
     
 
 
