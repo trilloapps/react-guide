@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { authentication } from '../firebase';
+import { useNavigate } from 'react-router-dom';
+
 function SignUp() {
     const [verifyBoolean, setVerifyBoolean] = useState(false)
     const [loader, setLoader] = useState(false)
@@ -142,17 +144,24 @@ function SignUp() {
         })
     }
 
+    useEffect(() => {
+        let header = document.getElementById('header');
+        header.style.display = 'none';
+      }, []);
+      const navigate = useNavigate();
+      const navigateToLogin = () =>{
+        navigate('/')
+      }
 
     return (
         <div>
-
             {!verifyBoolean ? (
                 <div>
                     <div className='auth-bg'></div>
                     <div className='auth-card shadow'>
                         <div id="recaptcha-container"></div>
                         <form onSubmit={handleSendCode}>
-                            <div className='login-logo mb-3'>SignUp</div>
+                            <h2 className='login-logo mb-3 text-center'>SignUp</h2>
                             <div className="row">
                                 <div className="form-group mb-3 col-md-12">
                                     <label className="form-label" htmlFor="email">Email</label>
@@ -274,15 +283,18 @@ function SignUp() {
                                 </button>
                             </div>
                             <div className="text-center mb-3">
-                                <span>Already have a member? <a className="text-primary" href="/auth/login">Login</a></span>
+                                <span>Already have a member? <a className="text-primary" style={{cursor:'pointer'}} onClick={navigateToLogin}>Login</a></span>
                             </div>
-                            <div id='testing'></div>
                         </form>
                     </div>
+                            <div id='testing'></div>
                 </div>
             ) :
 
-                (<div className="auth-card shadow" >
+                (
+                <div>
+                    <div className='auth-bg'></div>
+                <div className="auth-card shadow" >
                     <div className="">
                         <h2 className="text-primary fw-bold text-center mb-4">
                             We just texted you
@@ -340,7 +352,9 @@ function SignUp() {
                             </div>
                         </div>
                     </div>
-                </div>)}
+                </div>
+                </div>
+                )}
             <ToastContainer />
         </div>
     );
