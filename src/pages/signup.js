@@ -81,8 +81,8 @@ function SignUp() {
                 },
                 body: JSON.stringify({
                     userId: newUserForm.userId.value,
-                    role: ['user'],
-                    tenantName: ['cloud'],
+                    role: 'user',
+                    tenantName: 'cloud',
                     password: newUserForm.password.value,
                     rptPassword: newUserForm.rptPassword.value,
                     email: newUserForm.email.value,
@@ -93,10 +93,17 @@ function SignUp() {
             });
             const data = await response.json();
 
-            if (data.status === 'connected') {
-                window.location.href = ('/customers');
-                localStorage.setItem('accessToken', data.accessToken);
-                localStorage.setItem('userDetails', JSON.stringify(data.user));
+            if (data.status === 'success') {
+                toast.success(`User created successfully`, {
+                    position: 'top-right',
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+                navigateToLogin()
+                
             }
             else {
                 toast.error(`${data.message}`, {

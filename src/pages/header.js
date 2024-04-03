@@ -70,7 +70,7 @@ export function Header() {
     formData.append('functionName', 'AddUserImage');
     formData.append('functionParam', JSON.stringify(functionParam));
 
-
+    
     // Example using fetch:
     fetch('https://api.apps-demo-2.trilloapps.com/foldersvc/cloudstorage/upload', {
       method: 'POST',
